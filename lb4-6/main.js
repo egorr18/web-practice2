@@ -2,16 +2,6 @@
 
 console.log("Підключено JavaScript для лабораторної роботи «Фільмова база»");
 
-/* =============================================
-   ЛАБОРАТОРНИЙ ПРОЕКТ: Фільмова база
-   Використані технології:
-   • Fetch API + async/await
-   • Обробка помилок (try/catch)
-   • ES6: деструктуризація, шаблонні рядки, стрілочні функції
-   • Динамічне створення DOM
-   • Фільтрація (назва + жанр) + сортування
-   ============================================= */
-
 let allShows = [];
 let currentSort = "name";
 
@@ -22,7 +12,6 @@ const sortRatingBtn = document.getElementById("sortRating");
 const loading = document.getElementById("loading");
 const moviesContainer = document.getElementById("moviesContainer");
 
-// 3. Отримання даних з API (2 бали)
 async function fetchMovies() {
     loading.style.display = "block";
     moviesContainer.innerHTML = "";
@@ -38,7 +27,7 @@ async function fetchMovies() {
         console.log(`Завантажено ${allShows.length} серіалів`);
 
         populateGenres();
-        applyFiltersAndSort();          // перше відображення
+        applyFiltersAndSort();
 
     } catch (error) {
         console.error("Помилка завантаження:", error);
@@ -48,7 +37,6 @@ async function fetchMovies() {
     }
 }
 
-// Заповнення випадаючого списку жанрів
 function populateGenres() {
     const genresSet = new Set();
     allShows.forEach(show => {
@@ -66,7 +54,6 @@ function populateGenres() {
     });
 }
 
-// Відображення карток (шаблонні рядки + деструктуризація)
 function renderMovies(shows) {
     moviesContainer.innerHTML = "";
 
@@ -76,7 +63,7 @@ function renderMovies(shows) {
     }
 
     shows.forEach(show => {
-        const { id, name, rating, genres, image, summary } = show;   // ES6 деструктуризація
+        const { id, name, rating, genres, image, summary } = show;
 
         const ratingValue = rating?.average ?? "N/A";
         const poster = image?.medium ?? "https://placehold.co/210x295?text=Без+зображення";
@@ -96,7 +83,6 @@ function renderMovies(shows) {
             </div>
         `;
 
-        // Бонус: клік відкриває повну сторінку серіалу
         card.addEventListener("click", () => {
             window.open(`https://www.tvmaze.com/shows/${id}`, "_blank");
         });
@@ -105,11 +91,9 @@ function renderMovies(shows) {
     });
 }
 
-// 5. Фільтрація та сортування (2 бали)
 function applyFiltersAndSort() {
     let filtered = [...allShows];
 
-    // Пошук за назвою
     const term = searchInput.value.toLowerCase().trim();
     if (term) {
         filtered = filtered.filter(show => 
@@ -117,13 +101,11 @@ function applyFiltersAndSort() {
         );
     }
 
-    // Фільтр за жанром
     const selectedGenre = genreSelect.value;
     if (selectedGenre !== "all") {
         filtered = filtered.filter(show => show.genres.includes(selectedGenre));
     }
 
-    // Сортування
     if (currentSort === "name") {
         filtered.sort((a, b) => a.name.localeCompare(b.name));
     } else if (currentSort === "rating") {
@@ -137,7 +119,6 @@ function applyFiltersAndSort() {
     renderMovies(filtered);
 }
 
-// Обробники подій
 searchInput.addEventListener("input", applyFiltersAndSort);
 genreSelect.addEventListener("change", applyFiltersAndSort);
 
@@ -155,5 +136,4 @@ function showError(message) {
     moviesContainer.innerHTML = `<div class="error">${message}</div>`;
 }
 
-// Запуск при завантаженні сторінки
 document.addEventListener("DOMContentLoaded", fetchMovies);
