@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фільмова база</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>🎬 Фільмова база</h1>
+        <p>Дані з TV Maze API • Пошук • Фільтрація • Сортування</p>
+    </header>
+
+    <div class="controls">
+        <input type="text" id="searchInput" placeholder="Пошук за назвою фільму...">
+        
+        <select id="genreSelect">
+            
+        </select>
+        
+        <button id="sortName">Сортувати за назвою (A-Z)</button>
+        <button id="sortRating">Сортувати за рейтингом (↓)</button>
+    </div>
+
+    <div id="loading" class="loading">Завантаження фільмів з API...</div>
+    <div id="moviesContainer" class="movies-grid"></div>
+
+    <script src="main.js"></script>
+</body>
+</html>
