@@ -47,8 +47,8 @@ addTaskButton.addEventListener("click", function () {
 
 taskInput.addEventListener("keypress", function (event) {
     if (event.key === "Enter") {
-        addTaskButton.click(); // імітуємо клік по кнопці
+        addTaskButton.click();
     }
 });
 
-console.log("✅ To-do list повністю готовий і працює!");
+console.log("To-do list повністю готовий і працює!");
