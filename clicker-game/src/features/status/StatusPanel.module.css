@@ -1,0 +1,38 @@
+.wrapper {
+  display: grid;
+  gap: 0.8rem;
+}
+
+.message {
+  padding: 0.95rem 1rem;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.info {
+  background: rgba(56, 189, 248, 0.12);
+}
+
+.success {
+  background: rgba(52, 211, 153, 0.14);
+}
+
+.warning {
+  background: rgba(251, 191, 36, 0.14);
+}
+
+.error {
+  background: rgba(251, 113, 133, 0.14);
+}
+
+.meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+
+.storageError {
+  color: #fecdd3;
+}

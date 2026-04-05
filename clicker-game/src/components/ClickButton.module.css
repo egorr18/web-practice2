@@ -1,0 +1,49 @@
+.wrapper {
+  display: grid;
+  gap: 0.9rem;
+}
+
+.button {
+  min-height: 160px;
+  border: none;
+  border-radius: 28px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #071018;
+  background:
+    radial-gradient(circle at top, rgba(255, 255, 255, 0.6), transparent 40%),
+    linear-gradient(140deg, var(--accent), var(--accent-strong));
+  box-shadow: 0 22px 40px rgba(14, 165, 233, 0.28);
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 28px 55px rgba(14, 165, 233, 0.33);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(2px) scale(0.99);
+}
+
+.button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.meta {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem 1rem;
+  color: var(--text-muted);
+  font-size: 0.92rem;
+}
+
+@media (max-width: 640px) {
+  .meta {
+    grid-template-columns: 1fr;
+  }
+}
