@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Практична робота №7: Робота з даними</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="container">
+    <header class="page-header">
+      <h1>Практична робота №7</h1>
+      <p>JSON, localStorage, методи масивів, обробка помилок і To-do list.</p>
+    </header>
+
+    <section class="card">
+      <h2>Завдання 1-3: JSON, localStorage та масиви</h2>
+      <p>
+        Натисніть кнопку, щоб побачити приклади роботи з
+        <code>JSON.parse</code>, <code>JSON.stringify</code>,
+        <code>localStorage</code>, <code>map</code>, <code>filter</code> та <code>reduce</code>.
+      </p>
+      <button id="loadData" type="button">Завантажити дані</button>
+      <pre id="output">Результат з'явиться тут...</pre>
+    </section>
+
+    <section class="card">
+      <h2>Завдання 4: To-do list із localStorage</h2>
+      <div class="todo-controls">
+        <input
+          type="text"
+          id="taskInput"
+          placeholder="Введіть завдання"
+          maxlength="120"
+        >
+        <button id="addTask" type="button">Додати завдання</button>
+      </div>
+
+      <p id="taskStats" class="stats">Усього завдань: 0</p>
+      <ul id="taskList" class="task-list"></ul>
+    </section>
+
+    <section class="card">
+      <h2>Завдання 5: Обробка помилок</h2>
+      <p>
+        Кнопка нижче демонструє безпечну обробку помилки під час парсингу JSON через
+        <code>try/catch</code>.
+      </p>
+      <button id="testJsonError" type="button">Показати помилку JSON</button>
+      <pre id="errorOutput">Помилки ще не перевірялися...</pre>
+    </section>
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
