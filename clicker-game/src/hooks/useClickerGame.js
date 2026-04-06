@@ -62,12 +62,15 @@ function applyReward(currentState, reward, setStatus) {
       nextState.credits += reward.value;
       nextState.totalEarned += reward.value;
       break;
+
     case "booster":
       nextState.boosters += reward.value;
       break;
+
     case "duiktcoins":
       nextState.duiktcoins += reward.value;
       break;
+
     case "unlockSkin":
       if (!nextState.skinsUnlocked.includes(reward.value)) {
         nextState.skinsUnlocked = [...nextState.skinsUnlocked, reward.value];
@@ -77,9 +80,11 @@ function applyReward(currentState, reward, setStatus) {
         statusText = `${reward.message} Скін уже був відкритий, тому ви отримали +100 кредитів.`;
       }
       break;
+
     case "clearAntiBonus":
       nextState.antiBonus = null;
       break;
+
     case "antiBonus": {
       const antiBonus = getRandomAntiBonus();
       nextState.antiBonus = {
@@ -89,6 +94,7 @@ function applyReward(currentState, reward, setStatus) {
       statusText = `${antiBonus.label}: ${antiBonus.description}`;
       break;
     }
+
     default:
       break;
   }
@@ -99,6 +105,45 @@ function applyReward(currentState, reward, setStatus) {
   });
 
   return unlockSkinIfNeeded(nextState);
+}
+
+function applyTimedEffects(currentState, now) {
+  let nextState = currentState;
+  let changed = false;
+
+  if (nextState.activeBoosterUntil && nextState.activeBoosterUntil <= now) {
+    nextState = {
+      ...nextState,
+      activeBoosterUntil: 0
+    };
+    changed = true;
+  }
+
+  if (nextState.antiBonus && nextState.antiBonus.endsAt <= now) {
+    nextState = {
+      ...nextState,
+      antiBonus: null
+    };
+    changed = true;
+  }
+
+  return changed ? nextState : currentState;
+}
+
+function applyPassiveTick(currentState, now) {
+  const preparedState = applyTimedEffects(currentState, now);
+  const tick = getPassiveTickBreakdown(preparedState, now);
+
+  if (tick.totalIncome <= 0 && tick.autoClicks <= 0) {
+    return preparedState;
+  }
+
+  return unlockSkinIfNeeded({
+    ...preparedState,
+    credits: preparedState.credits + tick.totalIncome,
+    totalEarned: preparedState.totalEarned + tick.totalIncome,
+    totalClicks: preparedState.totalClicks + tick.autoClicks
+  });
 }
 
 export function useClickerGame() {
@@ -114,7 +159,6 @@ export function useClickerGame() {
   });
   const [clock, setClock] = useState(Date.now());
   const initializedRef = useRef(false);
-  const lastTickRef = useRef(Date.now());
 
   useEffect(() => {
     if (isLoading || initializedRef.current) {
@@ -148,7 +192,6 @@ export function useClickerGame() {
       });
     }
 
-    lastTickRef.current = Date.now();
     initializedRef.current = true;
   }, [data, isLoading]);
 
@@ -172,68 +215,10 @@ export function useClickerGame() {
 
     const timerId = window.setInterval(() => {
       const now = Date.now();
+
       setClock(now);
-
-      setGameState((currentState) => {
-        let nextState = currentState;
-        let changed = false;
-        const elapsedTicks = Math.floor((now - lastTickRef.current) / 1000);
-
-        if (elapsedTicks > 0) {
-          for (let tickIndex = 0; tickIndex < elapsedTicks; tickIndex += 1) {
-            const tickTime = lastTickRef.current + 1000 * (tickIndex + 1);
-
-            if (nextState.activeBoosterUntil && nextState.activeBoosterUntil <= tickTime) {
-              nextState = {
-                ...nextState,
-                activeBoosterUntil: 0
-              };
-              changed = true;
-            }
-
-            if (nextState.antiBonus && nextState.antiBonus.endsAt <= tickTime) {
-              nextState = {
-                ...nextState,
-                antiBonus: null
-              };
-              changed = true;
-            }
-
-            const tickBreakdown = getPassiveTickBreakdown(nextState, tickTime);
-
-            if (tickBreakdown.totalIncome > 0 || tickBreakdown.autoClicks > 0) {
-              nextState = {
-                ...nextState,
-                credits: nextState.credits + tickBreakdown.totalIncome,
-                totalEarned: nextState.totalEarned + tickBreakdown.totalIncome,
-                totalClicks: nextState.totalClicks + tickBreakdown.autoClicks
-              };
-              changed = true;
-            }
-          }
-
-          lastTickRef.current += elapsedTicks * 1000;
-        }
-
-        if (nextState.activeBoosterUntil && nextState.activeBoosterUntil <= now) {
-          nextState = {
-            ...nextState,
-            activeBoosterUntil: 0
-          };
-          changed = true;
-        }
-
-        if (nextState.antiBonus && nextState.antiBonus.endsAt <= now) {
-          nextState = {
-            ...nextState,
-            antiBonus: null
-          };
-          changed = true;
-        }
-
-        return changed ? unlockSkinIfNeeded(nextState) : currentState;
-      });
-    }, 250);
+      setGameState((currentState) => applyPassiveTick(currentState, now));
+    }, 1000);
 
     return () => {
       window.clearInterval(timerId);
@@ -261,14 +246,24 @@ export function useClickerGame() {
         return currentState;
       }
 
+      const nextLevel = currentLevel + 1;
       const nextState = {
         ...currentState,
         credits: currentState.credits - cost,
         upgrades: {
           ...currentState.upgrades,
-          [upgradeId]: currentLevel + 1
+          [upgradeId]: nextLevel
         }
       };
+
+      if (upgradeId === "autoClicker") {
+        const clicksPerSecond = getAutoClicksPerSecond(nextState.upgrades);
+        setStatus({
+          type: "success",
+          text: `Auto Clicker куплено. Автокліки тепер: ${clicksPerSecond}/с.`
+        });
+        return nextState;
+      }
 
       setStatus({
         type: "success",
@@ -380,6 +375,7 @@ export function useClickerGame() {
       }
 
       const nextUntil = Date.now() + getBoosterDurationMs();
+
       setStatus({
         type: "success",
         text: "Бустер активовано на 30 секунд."
@@ -472,7 +468,6 @@ export function useClickerGame() {
         text: `Престиж виконано. Отримано ${reward} Duiktcoins.`
       });
 
-      lastTickRef.current = Date.now();
       return nextState;
     });
   };

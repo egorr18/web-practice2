@@ -26,13 +26,18 @@ export function getManualBaseClickValue(upgrades) {
 }
 
 export function getAutoClicksPerSecond(upgrades) {
-  return upgrades.autoClicker;
+  if (upgrades.autoClicker <= 0) {
+    return 0;
+  }
+
+  return 2 ** (upgrades.autoClicker - 1);
 }
 
 export function getAutoClickIncome(state, now = Date.now()) {
   const multiplier = getGlobalIncomeMultiplier(state, now);
   const autoClicks = getAutoClicksPerSecond(state.upgrades);
   const manualBase = getManualBaseClickValue(state.upgrades);
+
   return roundNumber(autoClicks * manualBase * multiplier);
 }
 
@@ -40,14 +45,17 @@ export function getPassiveIncome(state, now = Date.now()) {
   const multiplier = getGlobalIncomeMultiplier(state, now);
   const glitchPenalty = isAntiBonusActive(state, "glitch", now) ? 0.5 : 1;
   const passiveBase = state.upgrades.passiveIncome * 2;
+
   return roundNumber(passiveBase * multiplier * glitchPenalty);
 }
 
 export function getPassiveTickBreakdown(state, now = Date.now()) {
+  const autoClicks = getAutoClicksPerSecond(state.upgrades);
   const autoIncome = getAutoClickIncome(state, now);
   const passiveIncome = getPassiveIncome(state, now);
+
   return {
-    autoClicks: getAutoClicksPerSecond(state.upgrades),
+    autoClicks,
     autoIncome,
     passiveIncome,
     totalIncome: autoIncome + passiveIncome
@@ -86,6 +94,7 @@ export function getPrestigeMultiplier(duiktcoins) {
 export function getGlobalIncomeMultiplier(state, now = Date.now()) {
   const prestigeMultiplier = getPrestigeMultiplier(state.duiktcoins);
   const boosterMultiplier = state.activeBoosterUntil > now ? 2 : 1;
+
   return prestigeMultiplier * boosterMultiplier;
 }
 
