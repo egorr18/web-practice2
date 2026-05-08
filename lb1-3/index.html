@@ -1,21 +1,140 @@
 <!DOCTYPE html>
 <html lang="uk">
 <head>
-    <meta charset="UTF-8">
-    <title>Конструктор резюме</title>
-    <style>
-        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
-        .resume-card { border: 2px solid #333; padding: 20px; max-width: 600px; margin-top: 20px; }
-        h2 { border-bottom: 1px solid #ccc; }
-        .error { color: red; font-weight: bold; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Конструктор резюме</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #eef3f6;
+      color: #1f2933;
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    main {
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 32px 18px;
+    }
+
+    h1 {
+      margin: 0 0 8px;
+      color: #17324d;
+    }
+
+    .lead {
+      margin: 0 0 22px;
+      color: #52606d;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 22px;
+    }
+
+    button {
+      min-height: 42px;
+      border: 0;
+      border-radius: 8px;
+      padding: 0 16px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button.secondary {
+      background: #d9e2ec;
+      color: #243b53;
+    }
+
+    .resume-card {
+      border: 1px solid #d5dde5;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: 0 16px 40px rgba(31, 41, 51, 0.08);
+      padding: 26px;
+    }
+
+    .resume-card h2 {
+      margin: 0;
+      color: #102a43;
+      font-size: 2rem;
+    }
+
+    .resume-card .meta {
+      margin: 6px 0 20px;
+      color: #52606d;
+    }
+
+    .section {
+      margin-top: 22px;
+      padding-top: 16px;
+      border-top: 1px solid #e3e8ee;
+    }
+
+    .section h3 {
+      margin: 0 0 10px;
+      color: #17324d;
+    }
+
+    .item {
+      margin: 0 0 10px;
+    }
+
+    .skills {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      list-style: none;
+    }
+
+    .skills li {
+      border-radius: 999px;
+      padding: 6px 12px;
+      background: #e0f2fe;
+      color: #075985;
+      font-weight: 700;
+    }
+
+    .status {
+      min-height: 24px;
+      color: #0f766e;
+      font-weight: 700;
+    }
+
+    .error {
+      color: #b91c1c;
+    }
+  </style>
 </head>
 <body>
-    <h1>Генератор професійного резюме</h1>
-    <button id="startBtn">Створити нове резюме</button>
-    
-    <div id="resumeOutput"></div>
+  <main>
+    <h1>Конструктор професійного резюме</h1>
+    <p class="lead">
+      Лабораторна робота 1-3: змінні, функції, замикання, класи, наслідування,
+      геттери/сеттери, DOM та localStorage.
+    </p>
 
-    <script src="main.js"></script>
+    <div class="controls">
+      <button id="startBtn" type="button">Створити / редагувати резюме</button>
+      <button id="demoBtn" class="secondary" type="button">Заповнити приклад</button>
+      <button id="clearBtn" class="secondary" type="button">Очистити збереження</button>
+    </div>
+
+    <p id="status" class="status"></p>
+    <div id="resumeOutput"></div>
+  </main>
+
+  <script src="main.js"></script>
 </body>
 </html>
