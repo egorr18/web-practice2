@@ -29,7 +29,7 @@ jobs:
 
       - name: Install dependencies
         working-directory: clicker-game
-        run: npm install
+        run: npm ci
 
       - name: Build
         working-directory: clicker-game
